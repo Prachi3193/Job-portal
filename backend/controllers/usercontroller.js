@@ -13,6 +13,17 @@ export const register = async (req, res) => {
                 success: false,
             });
         }
+        const file=req.file;
+        let cloudResponse;
+        if (file) {
+            const fileUri = getDataUri(file);
+
+            // Handle both images and PDFs
+            cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+                resource_type: file.mimetype.startsWith("application/") ? "raw" : "auto",
+            });
+        }
+
         const user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({
@@ -27,6 +38,9 @@ export const register = async (req, res) => {
             phoneNumber,
             password: hashedPassword,
             role,
+            profile:{
+                profilephoto:cloudResponse.secure_url,
+            }
         });
         return res.status(201).json({
             message: "Account created successfully",

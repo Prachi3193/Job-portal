@@ -38,9 +38,20 @@ const Navbar = () => {
             </div>
             <div className='flex items-center gap-12'>
                 <ul className='flex font-medium items-center gap-5'>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/jobs">Jobs</Link></li>
-                    <li><Link to="/browse">Browse</Link></li>
+                    {
+                        user && user.role==='recruiter'?(
+                            <>
+                                <li><Link to="/admin/companies">Companies</Link></li>
+                                <li><Link to="admin/jobs">Jobs</Link></li>
+                            </>
+                        ):(
+                            <>
+                                <li><Link to="/">Home</Link></li>
+                                <li><Link to="/jobs">Jobs</Link></li>
+                                <li><Link to="/browse">Browse</Link></li>
+                            </>
+                        )
+                    }
                 </ul>
                 {
                     !user ?(
@@ -53,26 +64,30 @@ const Navbar = () => {
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Avatar className='cursor-pointer'>
-                                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                                    <AvatarImage src={user?.profile?.profilephoto} alt="@shadcn" />
                                 </Avatar>
                             </PopoverTrigger>
                             <PopoverContent className='w-80'>
                                 <div className=''>
                                     <div className='flex gap-2 space-y-2'>
                                         <Avatar className='cursor-pointer'>
-                                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                                            <AvatarImage src={user?.profile?.profilephoto} alt="@shadcn" />
                                         </Avatar>
                                         <div>
-                                            <h4 className='font-medium'>Prachi</h4>
-                                            <p className='text-sm text-muted-foreground'>Lorem ipsum dolor sit amet.</p>
+                                            <h4 className='font-medium'>{user?.fullname}</h4>
+                                            <p className='text-sm text-muted-foreground'>{user?.profile?.bio}</p>
                                         </div>
                                     </div>
                                     <div className='flex flex-col text-gray-600 my-2'>
+                                        {
+                                            user && user.role==='student' &&(
+                                                <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                                                    <User2/>
+                                                    <Button variant="link"><Link to="/profile">View Profile</Link></Button>
+                                                </div>
+                                            )
+                                        }
                                         
-                                        <div className='flex w-fit items-center gap-2 cursor-pointer'>
-                                            <User2/>
-                                            <Button variant="link"><Link to="/profile">View Profile</Link></Button>
-                                        </div>
                                         <div className='flex w-fit items-center gap-2 cursor-pointer'>
                                             <LogOut/>
                                             <Button onClick={logoutHandler} variant="link">Logout</Button>
